@@ -1,6 +1,7 @@
 import SummaryCard from '@/components/SummaryCard';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { formatNumber } from '@/lib/formatter/numberFormatter';
 import Image from 'next/image';
 
 const DashboardPage = () => {
@@ -31,29 +32,29 @@ const DashboardPage = () => {
     {
       product: 'Microsoft Surface 7',
       createdAt: '12 Mei 2023',
-      price: '1000',
+      price: 1000,
     },
     {
       product: 'Microsoft Surface 7',
       createdAt: '12 Mei 2023',
-      price: '1000',
+      price: 1000,
     },
     {
       product: 'Microsoft Surface 7',
       createdAt: '12 Mei 2023',
-      price: '1000',
+      price: 1000,
     },
   ];
 
   return (
-    <section>
-      <h1 className="pt-[30px] pb-8 text-lg">Dashboard</h1>
+    <section className="py-8">
+      <h1 className="text-lg">Dashboard</h1>
       <div className="flex flex-wrap gap-4">
         {summaryData.map((data, index) => (
           <SummaryCard {...data} key={index} />
         ))}
       </div>
-      <div className="my-8 px-[30px] pt-[22px] pb-[45px] bg-background rounded-xl max-w-[784px]">
+      <div className="mt-8 px-[30px] pt-[22px] pb-[45px] bg-background rounded-xl max-w-[784px]">
         <h2 className="font-medium mb-5">Produk Terbaru</h2>
         <div>
           <Table className="border-collapse">
@@ -76,7 +77,7 @@ const DashboardPage = () => {
                     {p.product}
                   </TableCell>
                   <TableCell className="text-muted-foreground">{p.createdAt}</TableCell>
-                  <TableCell>Rp {p.price}</TableCell>
+                  <TableCell>Rp {formatNumber(p.price)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
