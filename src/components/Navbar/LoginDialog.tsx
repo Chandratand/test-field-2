@@ -1,20 +1,24 @@
 'use client';
 
+import { registerUser } from '@/actions/user';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { LoginValidator } from '@/lib/validator/authentication';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-const LoginPage = () => {
+const LoginDialog = () => {
+  const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
   const form = useForm<z.infer<typeof LoginValidator>>({
     resolver: zodResolver(LoginValidator),
   });
-  const router = useRouter();
 
   const onSubmit = async (data: z.infer<typeof LoginValidator>) => {
     try {
@@ -32,23 +36,17 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="w-full lg:grid lg:min-h-screen lg:grid-cols-2">
-      <div className="hidden bg-primary lg:flex lg:flex-col lg:justify-center lg:items-center lg:text-center gap-4 relative overflow-hidden">
-        <div className="size-[800px] bg-white/15 rounded-full absolute right-0 top-[339px]" />
-        <div className="size-[500px] bg-white/15 rounded-full absolute left-[-258px] top-[-17px]" />
-        <h2 className="font-semibold text-5xl uppercase tracking-tight">Nama aplikasi</h2>
-        <p className="max-w-[430px] text-sm font-normal">
-          Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a
-          type specimen book.
-        </p>
-      </div>
-      <div className="flex items-center justify-center py-12">
-        <div className="mx-auto grid w-[350px] gap-8">
-          <div className="grid gap-2">
-            <h1 className="text-2xl font-normal">Selemat Datang Admin</h1>
-            <p className="text-xs text-muted-foreground">Silahkan masukkan email atau nomor telepon dan password Anda untuk mulai menggunakan aplikasi</p>
-          </div>
-
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button className="uppercase tracking-widest" variant={'outline'}>
+          masuk
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className="text-center font-normal txt-lg">Masuk</DialogTitle>
+        </DialogHeader>
+        <div className="mt-10">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(async (data) => await onSubmit(data))} className="flex flex-col gap-4">
               <FormField
@@ -83,9 +81,9 @@ const LoginPage = () => {
             </form>
           </Form>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
-export default LoginPage;
+export default LoginDialog;

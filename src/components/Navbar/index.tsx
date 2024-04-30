@@ -1,13 +1,13 @@
 'use client';
 
 import { Search } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
-import { Button, buttonVariants } from '../ui/button';
-import { Input } from '../ui/input';
-import { useSession } from 'next-auth/react';
 import AccountDropdown from '../AdminLayout/AccountDropdown';
+import { Input } from '../ui/input';
+import LoginDialog from './LoginDialog';
 import RegisterDialog from './RegisterDialog';
 
 const Navbar = () => {
@@ -44,9 +44,7 @@ const Navbar = () => {
             <AccountDropdown />
           ) : (
             <>
-              <Link href={'/login'} className={buttonVariants({ variant: 'outline', className: 'uppercase tracking-widest' })}>
-                MAsuk
-              </Link>
+              <LoginDialog />
               <RegisterDialog />
             </>
           )}

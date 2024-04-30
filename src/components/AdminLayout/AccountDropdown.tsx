@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback } from '../ui/avatar';
 import { Button } from '../ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 function getInitials(nameString: string) {
   return nameString
@@ -15,6 +16,7 @@ function getInitials(nameString: string) {
 
 const AccountDropdown = () => {
   const { status, data: session } = useSession();
+  const router = useRouter();
 
   if (status === 'loading') return null;
 
@@ -45,7 +47,14 @@ const AccountDropdown = () => {
           </div>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={() => signOut()} className="text-destructive gap-2 justify-center py-4 mb-5">
+        <DropdownMenuItem
+          onSelect={async () => {
+            const role = session?.user?.role;
+            await signOut({ redirect: false });
+            router.replace(role === 'Admin' ? '/login' : '/');
+          }}
+          className="text-destructive gap-2 justify-center py-4 mb-5"
+        >
           <Power size={24} />
           Keluar
         </DropdownMenuItem>
