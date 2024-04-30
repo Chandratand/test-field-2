@@ -8,14 +8,16 @@ import { formatNumber } from '@/lib/formatter/numberFormatter';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import Image from 'next/image';
+import ProductDetailDialog from './dialog/detail';
+import EditProductDialog from './dialog/edit';
 
 export type Product = {
   id: number;
   name: string;
   price: number;
   image: string;
-  status: 'Aktif' | 'Tidak Aktif';
-  createdAt: string;
+  status: string;
+  createdAt: Date;
 };
 
 export const columns: ColumnDef<Product>[] = [
@@ -95,6 +97,17 @@ export const columns: ColumnDef<Product>[] = [
               Tidak Aktif
             </Badge>
           )}
+        </div>
+      );
+    },
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => {
+      return (
+        <div className="flex flex-wrap gap-2">
+          <ProductDetailDialog data={row.original} />
+          <EditProductDialog data={row.original} />
         </div>
       );
     },

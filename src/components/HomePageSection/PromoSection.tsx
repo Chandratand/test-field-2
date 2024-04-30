@@ -4,6 +4,8 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { cn } from '@/lib/utils';
 import Autoplay from 'embla-carousel-autoplay';
 import { useEffect, useRef, useState } from 'react';
+import { AspectRatio } from '../ui/aspect-ratio';
+import Image from 'next/image';
 
 const PromoSection = () => {
   const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
@@ -32,8 +34,10 @@ const PromoSection = () => {
           {Array.from({ length: 5 }).map((_, index) => (
             <CarouselItem key={index}>
               <div className="p-1">
-                <div className="flex justify-center items-center bg-slate-300 w-full aspect-[3/1]">
-                  <span className="text-4xl font-semibold">{index + 1}</span>
+                <div className="flex justify-center items-center w-full">
+                  <AspectRatio ratio={3 / 1}>
+                    <Image fill src={'/dummy/promo-1.png'} alt={'promo' + index} />
+                  </AspectRatio>
                 </div>
               </div>
             </CarouselItem>

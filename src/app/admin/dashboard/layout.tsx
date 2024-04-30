@@ -1,13 +1,19 @@
-import Sidebar from "@/components/AdminLayout/Sidebar";
-import Header from "@/components/AdminLayout/Header";
-import type { Metadata } from "next";
+import Header from '@/components/AdminLayout/Header';
+import Sidebar from '@/components/AdminLayout/Sidebar';
+import { getAuthSession } from '@/lib/auth';
+import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
-  title: "Next Shadcn Dashboard Starter",
-  description: "Basic dashboard with Next.js and Shadcn",
+  title: 'Next Shadcn Dashboard Starter',
+  description: 'Basic dashboard with Next.js and Shadcn',
 };
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const session = await getAuthSession();
+
+  if (!session || session.user.role !== 'Admin') return redirect('/');
+
   return (
     <>
       <Header />

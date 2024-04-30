@@ -1,40 +1,57 @@
 'use client';
 
-import { createUser } from '@/actions/user';
+import { updateProduct } from '@/actions/product';
+import ImageUploader from '@/components/ImageUploader';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { CreateUserValidator } from '@/lib/validator/user';
+import { NumberInput } from '@/components/ui/number-input';
+import { Switch } from '@/components/ui/switch';
+import { EditProductValidator } from '@/lib/validator/product';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { FilePenLine } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-const AddUserDialog = () => {
+const EditProductDialog = ({ data }: { data: any }) => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const form = useForm<z.infer<typeof CreateUserValidator>>({
-    resolver: zodResolver(CreateUserValidator),
+  const form = useForm<z.infer<typeof EditProductValidator>>({
+    resolver: zodResolver(EditProductValidator),
   });
 
-  const router = useRouter();
+  useEffect(() => {
+    if (data) {
+      form.reset({
+        id: data?.id,
+        name: data?.name,
+        price: data?.price,
+        image: data?.image,
+        status: data?.status,
+      });
+    }
+  }, [data, form]);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="uppercase">TAmbah User</Button>
+        <button role="button" className="bg-[#EC9024] p-1 text-white rounded-full">
+          <FilePenLine size={14} />
+        </button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-center font-normal txt-lg">Tambah User</DialogTitle>
+          <DialogTitle className="text-center font-normal txt-lg">Edit Produk</DialogTitle>
         </DialogHeader>
         <div className="mt-10">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(async (data) => {
                 try {
-                  await createUser(data);
+                  await updateProduct(data);
                   router.refresh();
                   form.reset();
                   setIsOpen(false);
@@ -49,9 +66,9 @@ const AddUserDialog = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nama</FormLabel>
+                    <FormLabel>Nama Produk</FormLabel>
                     <FormControl>
-                      <Input placeholder="Masukan Nama" {...field} />
+                      <Input placeholder="Masukan Nama Produk" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -59,12 +76,12 @@ const AddUserDialog = () => {
               />
               <FormField
                 control={form.control}
-                name="phoneNumber"
+                name="price"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nomor Telepon</FormLabel>
+                    <FormLabel>Harga</FormLabel>
                     <FormControl>
-                      <Input placeholder="Masukan Nomor Telepon" {...field} />
+                      <NumberInput placeholder="Masukan Harga" value={field.value} onValueChange={(val) => field.onChange(val.floatValue)} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -72,12 +89,27 @@ const AddUserDialog = () => {
               />
               <FormField
                 control={form.control}
-                name="email"
+                name="image"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="Masukan Email" {...field} />
+                      <ImageUploader onChange={(event) => field.onChange('/dummy/product1.png')} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <FormControl>
+                      <div className="flex gap-2">
+                        <Switch checked={field.value === 'Aktif'} onCheckedChange={(val) => field.onChange(val ? 'Aktif' : 'Tidak Aktif')} aria-readonly />
+                        <FormLabel className="text-base">{field.value}</FormLabel>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -94,4 +126,4 @@ const AddUserDialog = () => {
   );
 };
 
-export default AddUserDialog;
+export default EditProductDialog;

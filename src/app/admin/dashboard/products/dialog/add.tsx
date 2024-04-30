@@ -1,24 +1,28 @@
 'use client';
 
+import { createProduct } from '@/actions/product';
 import ImageUploader from '@/components/ImageUploader';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import ImageInput from '@/components/ui/image-input';
 import { Input } from '@/components/ui/input';
 import { NumberInput } from '@/components/ui/number-input';
 import { CreateProductValidator } from '@/lib/validator/product';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 const AddProductDialog = () => {
+  const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
   const form = useForm<z.infer<typeof CreateProductValidator>>({
     resolver: zodResolver(CreateProductValidator),
   });
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button className="uppercase">Tambah Produk</Button>
       </DialogTrigger>
@@ -28,7 +32,19 @@ const AddProductDialog = () => {
         </DialogHeader>
         <div className="mt-10">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit((data) => console.log(data))} className="flex flex-col gap-4">
+            <form
+              onSubmit={form.handleSubmit(async (data) => {
+                try {
+                  await createProduct(data);
+                  router.refresh();
+                  form.reset();
+                  setIsOpen(false);
+                } catch (error) {
+                  console.log(error);
+                }
+              })}
+              className="flex flex-col gap-4"
+            >
               <FormField
                 control={form.control}
                 name="name"
@@ -61,7 +77,7 @@ const AddProductDialog = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <ImageUploader />
+                      <ImageUploader onChange={(event) => field.onChange('/dummy/product1.png')} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

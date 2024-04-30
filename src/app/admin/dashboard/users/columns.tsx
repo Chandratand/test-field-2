@@ -4,13 +4,15 @@ import Icons from '@/components/Icons';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ColumnDef } from '@tanstack/react-table';
+import UserDetailDialog from './dialog/detail';
+import EditUserDialog from './dialog/edit';
 
 export type User = {
   id: number;
   name: string;
   email: string;
   phoneNumber: string;
-  status: 'Aktif' | 'Tidak Aktif';
+  status: string;
 };
 
 export const columns: ColumnDef<User>[] = [
@@ -78,6 +80,17 @@ export const columns: ColumnDef<User>[] = [
               Tidak Aktif
             </Badge>
           )}
+        </div>
+      );
+    },
+  },
+  {
+    id: 'actions',
+    cell: ({ row }) => {
+      return (
+        <div className="flex flex-wrap gap-2">
+          <UserDetailDialog data={row.original} />
+          <EditUserDialog data={row.original} />
         </div>
       );
     },
