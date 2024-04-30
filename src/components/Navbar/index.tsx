@@ -8,6 +8,7 @@ import { Button, buttonVariants } from '../ui/button';
 import { Input } from '../ui/input';
 import { useSession } from 'next-auth/react';
 import AccountDropdown from '../AdminLayout/AccountDropdown';
+import RegisterDialog from './RegisterDialog';
 
 const Navbar = () => {
   const { status } = useSession();
@@ -46,7 +47,7 @@ const Navbar = () => {
               <Link href={'/login'} className={buttonVariants({ variant: 'outline', className: 'uppercase tracking-widest' })}>
                 MAsuk
               </Link>
-              <Button className="uppercase tracking-widest">daftar</Button>
+              <RegisterDialog />
             </>
           )}
         </div>

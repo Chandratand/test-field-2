@@ -4,6 +4,14 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const usersSeed = [
   {
+    name: 'Admin',
+    email: 'admin@example.com',
+    phoneNumber: '+1234567290',
+    role: 'Admin',
+    status: 'Aktif',
+    password: 'password123',
+  },
+  {
     name: 'John Doe',
     email: 'john.doe@example.com',
     phoneNumber: '+1234567890',
